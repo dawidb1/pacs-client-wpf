@@ -31,11 +31,6 @@ namespace pacs_client.Model
             // skonstruuj zapytanie
             gdcm.BaseRootQuery zapytanie = gdcm.CompositeNetworkFunctions.ConstructQuery(typ, poziom, klucze, true);
 
-            // sprawdź, czy zapytanie spełnia kryteria
-            //if (!zapytanie.ValidateQuery())
-            //{
-            //    return "MOVE błędne zapytanie!";
-            //}
 
             // przygotuj katalog na wyniki
             string odebrane = System.IO.Path.Combine(".", "odebrane"); // podkatalog odebrane w bieżącym katalogu
@@ -52,25 +47,15 @@ namespace pacs_client.Model
                 this.pacsConfiguration.callAET,
                 dane);
 
-            // sprawdź stan
-            //if (!stan)
-            //{
-            //    return "MOVE nie działa!";
-            //}
 
             List<string> pliki = new List<string>(System.IO.Directory.EnumerateFiles(dane));
             foreach (string plik in pliki)
             {
-                //resultString += "pobrano: {0}" + plik;
-
-                // MOVE + konwersja
-                // przeczytaj pixele
                 gdcm.PixmapReader reader = new gdcm.PixmapReader();
                 reader.SetFileName(plik);
                 if (!reader.Read())
                 {
-                    // najpewniej nie jest to obraz
-                    //resultString += "pomijam: {0}" + plik;
+                    // do not remove!!!! 
                     continue;
                 }
 
@@ -85,7 +70,6 @@ namespace pacs_client.Model
                     X[i].Save(name);
                     images.Add(name);
                 }
-                //images.AddRange(X);
             }
             return images;
         }

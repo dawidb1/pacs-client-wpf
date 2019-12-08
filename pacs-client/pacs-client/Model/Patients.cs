@@ -36,7 +36,7 @@ namespace pacs_client.Model
             // sprawdź, czy zapytanie spełnia kryteria
             if (!zapytanie.ValidateQuery())
             {
-                //return "FIND błędne zapytanie!";
+                return null;
             }
 
             // kontener na wyniki
@@ -54,19 +54,12 @@ namespace pacs_client.Model
             // sprawdź stan
             if (!stan)
             {
-                //this.status = "FIND nie działa!";
+                return null;
             }
-
-            //this.status = "FIND działa.";
 
             // pokaż wyniki
             foreach (gdcm.DataSet x in wynik)
             {
-                // UWAGA: toString() vs ToString() !!!
-
-                // + DOSTEP DO METADANYCH
-                //for (var iter = x.Begin(); iter != x.End(); ++iter) { } // brak wrapowania iteratorów...
-
                 // jeden element pary klucz-wartość
                 gdcm.DataElement de = x.GetDataElement(new gdcm.Tag(0x0010, 0x0020)); // konkretnie 10,20 = PATIENT_ID
 
