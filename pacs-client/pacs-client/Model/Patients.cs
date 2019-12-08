@@ -2,6 +2,7 @@
 
 namespace pacs_client.Model
 {
+    // based on https://platforma.polsl.pl/rib/mod/resource/view.php?id=12805
     public class Patients
     {
         IPacsConfiguration pacsConfiguration = null;
@@ -15,34 +16,18 @@ namespace pacs_client.Model
         public List<string> GetPatients()
         {
             var patients = new List<string>();
-            // typ wyszukiwania (rozpoczynamy od pacjenta)
             gdcm.ERootType typ = gdcm.ERootType.ePatientRootType;
-
-            // do jakiego poziomu wyszukujemy 
-            gdcm.EQueryLevel poziom = gdcm.EQueryLevel.ePatient; // zobacz tez inne 
-
-            // klucze (filtrowanie lub określenie, które dane są potrzebne)
+            gdcm.EQueryLevel poziom = gdcm.EQueryLevel.ePatient;
             gdcm.KeyValuePairArrayType klucze = new gdcm.KeyValuePairArrayType();
 
-            gdcm.Tag tag = new gdcm.Tag(0x0010, 0x0010); // 10,10 == PATIENT_NAME
-            gdcm.KeyValuePairType klucz1 = new gdcm.KeyValuePairType(tag, "*"); // * == dowolne imię
+            gdcm.Tag tag = new gdcm.Tag(0x0010, 0x0010);
+            gdcm.KeyValuePairType klucz1 = new gdcm.KeyValuePairType(tag, "*");
             klucze.Add(klucz1);
             klucze.Add(new gdcm.KeyValuePairType(new gdcm.Tag(0x0010, 0x0020), ""));
-            // zwrotnie oczekujemy wypełnionego 10,20 czyli PATIENT_ID
-
-            // skonstruuj zapytanie
             gdcm.BaseRootQuery zapytanie = gdcm.CompositeNetworkFunctions.ConstructQuery(typ, poziom, klucze);
 
-            // sprawdź, czy zapytanie spełnia kryteria
-            if (!zapytanie.ValidateQuery())
-            {
-                //return "FIND błędne zapytanie!";
-            }
-
-            // kontener na wyniki
             gdcm.DataSetArrayType wynik = new gdcm.DataSetArrayType();
 
-            // wykonaj zapytanie
             bool stan = gdcm.CompositeNetworkFunctions.CFind(
                 this.pacsConfiguration.ipPACS,
                 this.pacsConfiguration.portPACS,
@@ -51,28 +36,14 @@ namespace pacs_client.Model
                 this.pacsConfiguration.myAET,
                 this.pacsConfiguration.callAET);
 
-            // sprawdź stan
-            if (!stan)
-            {
-                //this.status = "FIND nie działa!";
-            }
 
-            //this.status = "FIND działa.";
-
-            // pokaż wyniki
             foreach (gdcm.DataSet x in wynik)
             {
-                // UWAGA: toString() vs ToString() !!!
 
-                // + DOSTEP DO METADANYCH
-                //for (var iter = x.Begin(); iter != x.End(); ++iter) { } // brak wrapowania iteratorów...
+                gdcm.DataElement de = x.GetDataElement(new gdcm.Tag(0x0010, 0x0020));
 
-                // jeden element pary klucz-wartość
-                gdcm.DataElement de = x.GetDataElement(new gdcm.Tag(0x0010, 0x0020)); // konkretnie 10,20 = PATIENT_ID
-
-                // dostęp jako string
-                gdcm.Value val = de.GetValue(); // pobierz wartość dla wskazanego klucza...
-                string str = val.toString();    // ...jako napis
+                gdcm.Value val = de.GetValue();
+                string str = val.toString();
                 patients.Add(str);
             }
             return patients;

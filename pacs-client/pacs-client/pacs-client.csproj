@@ -89,7 +89,6 @@
     <Compile Include="Model\Images.cs" />
     <Compile Include="Model\IPacsConfiguration.cs" />
     <Compile Include="Model\PacsConfiguration.cs" />
-    <Compile Include="Model\PacsConnectionTest.cs" />
     <Compile Include="Model\Patients.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

@@ -3,6 +3,7 @@ using System.Drawing;
 
 namespace pacs_client.Model
 {
+    // based on https://platforma.polsl.pl/rib/mod/resource/view.php?id=12805
     public class BitmapCoder
     {
         public static Bitmap[] gdcmBitmap2Bitmap(gdcm.Bitmap bmjpeg2000)
