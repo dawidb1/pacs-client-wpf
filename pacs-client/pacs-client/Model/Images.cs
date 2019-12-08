@@ -4,6 +4,7 @@ using System.Drawing;
 
 namespace pacs_client.Model
 {
+    // based on https://platforma.polsl.pl/rib/mod/resource/view.php?id=12805
     public class Images
     {
         private IPacsConfiguration pacsConfiguration;
@@ -17,29 +18,22 @@ namespace pacs_client.Model
         {
             var images = new List<string>();
             string resultString = string.Empty;
-            // typ wyszukiwania (rozpoczynamy od pacjenta)
             gdcm.ERootType typ = gdcm.ERootType.ePatientRootType;
 
-            // do jakiego poziomu wyszukujemy 
-            gdcm.EQueryLevel poziom = gdcm.EQueryLevel.ePatient; // zobacz inne 
+            gdcm.EQueryLevel poziom = gdcm.EQueryLevel.ePatient;
 
-            // klucze (filtrowanie lub określenie, które dane są potrzebne)
             gdcm.KeyValuePairArrayType klucze = new gdcm.KeyValuePairArrayType();
-            gdcm.KeyValuePairType klucz1 = new gdcm.KeyValuePairType(new gdcm.Tag(0x0010, 0x0020), patientId); // NIE WOLNO TU STOSOWAC *; tutaj PatientID="01"
+            gdcm.KeyValuePairType klucz1 = new gdcm.KeyValuePairType(new gdcm.Tag(0x0010, 0x0020), patientId);
             klucze.Add(klucz1);
 
-            // skonstruuj zapytanie
             gdcm.BaseRootQuery zapytanie = gdcm.CompositeNetworkFunctions.ConstructQuery(typ, poziom, klucze, true);
 
+            string odebrane = System.IO.Path.Combine(".", "odebrane");
+            if (!System.IO.Directory.Exists(odebrane))
+                System.IO.Directory.CreateDirectory(odebrane);
+            string dane = System.IO.Path.Combine(odebrane, System.IO.Path.GetRandomFileName());
+            System.IO.Directory.CreateDirectory(dane);
 
-            // przygotuj katalog na wyniki
-            string odebrane = System.IO.Path.Combine(".", "odebrane"); // podkatalog odebrane w bieżącym katalogu
-            if (!System.IO.Directory.Exists(odebrane)) // jeśli nie istnieje
-                System.IO.Directory.CreateDirectory(odebrane); // utwórz go
-            string dane = System.IO.Path.Combine(odebrane, System.IO.Path.GetRandomFileName()); // wygeneruj losową nazwę podkatalogu
-            System.IO.Directory.CreateDirectory(dane); // i go utwórz
-
-            // wykonaj zapytanie - pobierz do katalogu jak w zmiennej 'dane'
             bool stan = gdcm.CompositeNetworkFunctions.CMove(this.pacsConfiguration.ipPACS,
                 this.pacsConfiguration.portPACS,
                 zapytanie, this.pacsConfiguration.portMove,
@@ -59,11 +53,8 @@ namespace pacs_client.Model
                     continue;
                 }
 
-                // przekonwertuj na "znany format"
                 gdcm.Bitmap bmjpeg2000 = BitmapCoder.pxmap2jpeg2000(reader.GetPixmap());
-                // przekonwertuj na .NET bitmapę
                 Bitmap[] X = BitmapCoder.gdcmBitmap2Bitmap(bmjpeg2000);
-                // zapisz
                 for (int i = 0; i < X.Length; i++)
                 {
                     string name = String.Format("{0}_warstwa{1}.jpg", plik, i);

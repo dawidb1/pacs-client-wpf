@@ -5,7 +5,6 @@ using System.Windows.Media;
 
 namespace pacs_client
 {
-
     public partial class MainWindow : Window
     {
         Patients patients;
@@ -38,7 +37,6 @@ namespace pacs_client
             this.patientList = this.patients.GetPatients();
             patientDataGrid.ItemsSource = this.patientList;
         }
-
 
         private void ImageDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
