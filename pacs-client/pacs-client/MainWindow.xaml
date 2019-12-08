@@ -11,27 +11,28 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="RefreshBtn" Grid.Column="0" Content="Odśwież" Height="40" Click="RefreshBtn_Click"></Button>
-        <DataGrid Grid.Column="1" SelectionChanged="PatientDataGrid_SelectionChanged" 
+        <Button x:Name="RefreshBtn" Grid.Column="0" Content="Odśwież" 
+                Height="40" Click="RefreshBtn_Click"></Button>
+        <DataGrid Grid.Column="1" 
+                  SelectionChanged="PatientDataGrid_SelectionChanged" 
                   SelectedValue="{Binding selectedPatient}"  
                   x:Name="patientDataGrid"
                   AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding}" x:Name="PatientsGridColumn" Header="Pacjenci" Width="*">
+                <DataGridTextColumn Binding="{Binding}" 
+                    x:Name="PatientsGridColumn" Header="Pacjenci" 
+                    Width="*">
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <DataGrid x:Name="studyDataGrid"  Grid.Column="2" AutoGenerateColumns="False">
+        <DataGrid SelectionChanged="ImageDataGrid_SelectionChanged" 
+                  ItemsSource="{Binding imagesList}" 
+                  x:Name="imageDataGrid"  Grid.Column="3" 
+                  AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Badania" Width="*">
-                </DataGridTextColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-        <DataGrid ItemsSource="{Binding imagesList}" x:Name="imageDataGrid"  Grid.Column="3" AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding}" Header="Obrazy" Width="*">
+                <DataGridTextColumn Binding="{Binding}" 
+                    Header="Obrazy" Width="*">
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>

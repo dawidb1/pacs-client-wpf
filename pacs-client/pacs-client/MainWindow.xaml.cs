@@ -1,6 +1,7 @@
 ﻿using pacs_client.Model;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Media;
 
 namespace pacs_client
 {
@@ -38,6 +39,30 @@ namespace pacs_client
         {
             this.patientList = this.patients.GetPatients();
             patientDataGrid.ItemsSource = this.patientList;
+        }
+
+        //private void ImageDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        //{
+        //    var filename = imageDataGrid.SelectedValue.ToString();
+        //    var imageBrowserWindow = new ShowImageWindow();
+        //    var sourceName = new ImageSourceConverter().ConvertFromString(filename) as ImageSource;
+
+        //    imageBrowserWindow.imageContainer.Source = sourceName;
+        //    imageBrowserWindow.Show();
+        //}
+
+        private void ImageDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (imageDataGrid.SelectedValue != null)
+            {
+                var filename = imageDataGrid.SelectedValue.ToString();
+                var imageBrowserWindow = new ShowImageWindow();
+                var sourceName = new ImageSourceConverter().ConvertFromString(filename) as ImageSource;
+
+                imageBrowserWindow.imageContainer.Source = sourceName;
+                imageBrowserWindow.Show();
+            }
+
         }
     }
 }
